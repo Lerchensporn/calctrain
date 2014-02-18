@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style type="text/css">
+body {
+    background-color: lightgrey;
+    color: grey;
+    padding-left: 10px;
+    font-family: monospace;
+}
+
+input[type="text"] {
+    border: 1px solid grey;
+    padding: 2px;
+}
+
+#taskdiv {
+    display: inline;
+    color: black;
+    border: 1px dashed grey;
+    padding: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#calc {
+    padding: 15px;
+    padding-top: 20px;
+    padding-bottom: 5px;
+    margin-top: 10px;
+    background-color: white;
+}
+
+h1 {
+    margin: 0px;
+    margin-left: -2px;
+}
+
+#stats {
+    padding-left: 0px;
+}
+
+        </style>
+        <script type="text/javascript">
+
+window.onload = generate;
+
+var wrong = 0;
+var correct = 0;
+var wait_enter = false;
+var timeout;
+
+function rand(min, max) {
+    return min + Math.floor(Math.random() * (max - min) + 1);
+}
+
+function generate() {
+    var num1 = rand(10, 99);
+    var num2 = rand(10, 99);
+    var span = document.getElementById('task');
+    var input = document.getElementById('input');
+    input.disabled = false;
+
+    span.style.visibility = '';
+    span.innerHTML = num1 + ' + ' + num2;
+    clearTimeout(timeout);
+    timeout = setTimeout(function() {
+        span.style.visibility = 'hidden';
+    }, 2000);
+
+    input.value = '';
+    input.type = 'text';
+    document.onkeydown = function(ev) {
+        if (ev.keyCode === 13) {
+            if (input.value.length === 0 || wait_enter === true) {
+                wait_enter = false;
+                check.style.color = '';
+                check.innerHTML = 'Press enter to continue';
+                generate();
+            }
+            else if (num1 + num2 == input.value) {
+                wait_enter = false;
+                ++correct;
+                check.innerHTML = 'Correct';
+                check.style.color = 'green';
+                generate();
+            }
+            else {
+                wait_enter = true;
+                ++wrong;
+                span.style.visibility = '';
+                check.innerHTML = 'Result is: ' + (num1 + num2);
+                check.style.color = 'red';
+            }
+
+        }
+    };
+
+    input.focus();
+    stats.innerHTML = 'Correct answers: ' + correct + '<br/>Wrong answers: ' + wrong;
+}
+
+        </script>
+    </head>
+    <body>
+        <h1>Calculation</h1>
+        <div id="stats"></div>
+        <div id="settings">
+            
+        </div>
+        <div id="calc">
+            <div id="taskdiv"><span id="task"></span></div><br/>
+            <p/><input type="text" id="input" /><p/>
+            <span id="check">Press enter to continue</span>
+        </div>
+    </body>
+</html>
+
